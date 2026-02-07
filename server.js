@@ -20,6 +20,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dataDir = path.join(__dirname, 'data');
 const dataFile = path.join(dataDir, 'appointments.json');
+const distDir = path.join(__dirname, 'dist');
 
 const WHATSAPP_NUMBER = process.env.WHATSAPP_NUMBER || '1159132301'; // E.164 display only
 const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN || '';
@@ -172,6 +173,12 @@ app.post('/api/whatsapp/send', async (req, res) => {
   } catch (error) {
     return res.status(500).json({ error: 'No se pudo enviar el mensaje.' });
   }
+});
+
+// Serve frontend (Vite build output)
+app.use(express.static(distDir));
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(distDir, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3001;
